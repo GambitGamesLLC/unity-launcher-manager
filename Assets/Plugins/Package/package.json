@@ -1,0 +1,10 @@
+{
+  "name": "com.gambit.launcher",
+  "version": "1.0.0",
+  "displayName": "Launcher Manager",
+  "description": "Singleton for updating and launching child apps, as well as communicating with them",
+  "unity": "6000.1",
+  "author": {
+    "name": "Gambit Games LLC"
+  }
+}
