@@ -2,7 +2,8 @@
     "name": "gambit.launcher",
     "rootNamespace": "",
     "references": [
-        "GUID:fb409296692345840ae921b36ef03dc1"
+        "GUID:fb409296692345840ae921b36ef03dc1",
+        "GUID:103ee02900e54964e98b41cbe5570ad0"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -16,6 +17,11 @@
             "name": "com.gambit.singleton",
             "expression": "",
             "define": "GAMBIT_SINGLETON"
+        },
+        {
+            "name": "com.gambit.staticcoroutine",
+            "expression": "",
+            "define": "GAMBIT_STATIC_COROUTINE"
         }
     ],
     "noEngineReferences": false

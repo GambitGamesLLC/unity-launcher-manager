@@ -7,6 +7,13 @@
       "dependencies": {},
       "hash": "9e46011d75335eaaf8b58fdbbcc76c367ab15b36"
     },
+    "com.gambit.staticcoroutine": {
+      "version": "https://github.com/GambitGamesLLC/unity-static-Coroutine.git?path=Assets/Plugins/Package",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "f80a0500543d020f2a7e5ec4f8c5255020445f50"
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.7",
       "depth": 0,
