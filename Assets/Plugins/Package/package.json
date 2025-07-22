@@ -1,8 +1,8 @@
 {
-  "name": "com.gambit.launcher",
+  "name": "com.gambit.process",
   "version": "1.0.0",
-  "displayName": "Launcher Manager",
-  "description": "Singleton for updating and launching child apps, as well as communicating with them",
+  "displayName": "Process Manager",
+  "description": "Singleton for Starting, Stopping, listening for changes, and sending and recieving command line arguments",
   "unity": "6000.1",
   "author": {
     "name": "Gambit Games LLC"

@@ -5,19 +5,19 @@ using System.Collections.Generic;
 
 
 #if GAMBIT_LAUNCHER
-using gambit.launcher;
+using gambit.process;
 #endif
 
 #endregion
 
 
-namespace Gambit.LauncherDemo
+namespace Gambit.ProcessManagerDemo
 {
 
     /// <summary>
-    /// Used to test Launcher functionality
+    /// Used to test Process Manager functionality
     /// </summary>
-    public class LauncherDemo: MonoBehaviour
+    public class ProcessManagerDemo: MonoBehaviour
     {
 
         #region PUBLIC - VARIABLES
@@ -40,7 +40,7 @@ namespace Gambit.LauncherDemo
         /// <summary>
         /// Launcher System that handles interactions with the other process
         /// </summary>
-        private LauncherManager.LauncherSystem system = null;
+        private ProcessManager.ProcessSystem system = null;
 
         #endregion
 
@@ -69,10 +69,10 @@ namespace Gambit.LauncherDemo
         //---------------------------------//
         {
 
-            LauncherManager.Create
+            ProcessManager.Create
             (
                 //OPTIONS
-                new LauncherManager.Options()
+                new ProcessManager.Options()
                 {
                     showDebugLogs = true,
                     path = path,
@@ -81,7 +81,7 @@ namespace Gambit.LauncherDemo
                 },
 
                 //ON SUCCESS
-                ( LauncherManager.LauncherSystem _system ) =>
+                ( ProcessManager.ProcessSystem _system ) =>
                 {
                     system = _system;
                     LaunchProcess();
@@ -94,7 +94,7 @@ namespace Gambit.LauncherDemo
                 },
 
                 //ON STATE UPDATE
-                ( LauncherManager.LauncherSystem _system, LauncherManager.State state ) =>
+                ( ProcessManager.ProcessSystem _system, ProcessManager.State state ) =>
                 {
                     if( _system.options.showDebugLogs ) Debug.Log( "State Updated : " + state.ToString() );
                 }
@@ -114,7 +114,7 @@ namespace Gambit.LauncherDemo
         //---------------------------------//
         {
 
-            LauncherManager.LaunchProcess( system );
+            ProcessManager.LaunchProcess( system );
 
         } //END LaunchProcess
 

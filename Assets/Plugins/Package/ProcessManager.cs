@@ -1,7 +1,7 @@
 /*********************************************************
- * LauncherManager.cs
+ * ProcessManager.cs
  * 
- * Singleton manager used to update, launch, and communicate with child Unity3D apps
+ * Singleton manager used to start, stop, and send command line arguments with another application process
  * 
  **********************************************************/
 
@@ -52,38 +52,22 @@ public class Singleton<T>: MonoBehaviour where T : MonoBehaviour
 
 #endregion
 
-namespace gambit.launcher
+namespace gambit.process
 {
 
     /// <summary>
-    /// Singleton Manager for updating, launching, and communicating with Unity3D child apps
+    /// Singleton Manager for starting, stopping, and sending command line arguments to application processes
     /// </summary>
-    public class LauncherManager: Singleton<LauncherManager>
+    public class ProcessManager: Singleton<ProcessManager>
     {
-
-        #region PUBLIC - VARIABLES
-
-        #endregion
-
-        #region PRIVATE - VARIABLES
-
-        #endregion
-
-        #region PUBLIC - START
-
-        #endregion
-
-        #region PUBLIC - UPDATE
-
-        #endregion
 
         #region PUBLIC - RETURN CLASS - LAUNCHER SYSTEM
 
         /// <summary>
-        /// Launcher System generated when Create() is successfully called. Contains values important for future modification and communication with the Launcher Manager and the child app
+        /// Process System generated when Create() is successfully called. Contains values important for future modification and communication with the Process Manager and the child process
         /// </summary>
         //-----------------------------------------//
-        public class LauncherSystem
+        public class ProcessSystem
         //-----------------------------------------//
         {
             /// <summary>
@@ -92,33 +76,28 @@ namespace gambit.launcher
             public Options options = new Options();
 
             /// <summary>
-            /// The current state of the Launcher system
+            /// The current state of the Process system
             /// </summary>
             public State state = State.NotRunning;
 
             /// <summary>
-            /// Unity action to call when child app has sent the launcher application a message
+            /// Unity action to call when the state of the process changes
             /// </summary>
-            public Action<LauncherSystem> OnMessageRecieved;
-
-            /// <summary>
-            /// Unity action to call when the state of the launcher system changes
-            /// </summary>
-            public Action<LauncherSystem, State> OnStateUpdate;
+            public Action<ProcessSystem, State> OnStateUpdate;
 
             /// <summary>
             /// The Process for the executable are launching
             /// </summary>
             public Process process = null;
 
-        } //END LauncherSystem
+        } //END ProcessSystem
 
         #endregion
 
         #region PUBLIC - CREATION OPTIONS
 
         /// <summary>
-        /// Options object you can pass in to customize the spawned NeuroGuide system
+        /// Options object you can pass in to customize the spawned system
         /// </summary>
         //---------------------------------------------//
         public class Options
@@ -139,8 +118,8 @@ namespace gambit.launcher
             /// This list contains the keys to the values
             /// Do not include the '-' you normally would include with a command line argument.
             /// Be aware that the process will need to respond to these message by listening for them.
-            /// You can use the ReadArguments() function of this script to return these values to you. 
-            /// Simply include this package in your child app and use the LauncherManager.ReadArgumentKeys() function to get this List<string> back.
+            /// You can use the ReadArgumentKeys() function of this script to return these values to you. 
+            /// Simply include this package in your child app and use the ProcessManager.ReadArgumentKeys() function to get this List<string> back.
             /// </summary>
             public List<string> argumentKeys = new List<string>();
 
@@ -148,8 +127,8 @@ namespace gambit.launcher
             /// Optional command line arguments you want to pass into the process.
             /// This list contains the values
             /// Be aware that the process will need to respond to these message by listening for them.
-            /// You can use the ReadArguments() function of this script to return these values to you. 
-            /// Simply include this package in your child app and use the LauncherManager.ReadArgumentValues() function to get this List<string> back.
+            /// You can use the ReadArgumentValues() function of this script to return these values to you. 
+            /// Simply include this package in your child app and use the ProcessManager.ReadArgumentValues() function to get this List<string> back.
             /// </summary>
             public List<string> argumentValues = new List<string>();
 
@@ -160,7 +139,7 @@ namespace gambit.launcher
         #region PUBLIC - ENUM STATE
 
         /// <summary>
-        /// Possible states of the LauncherSystem
+        /// Possible states of the ProcessSystem
         /// </summary>
         //-----------------------//
         public enum State
@@ -178,46 +157,48 @@ namespace gambit.launcher
         #region PUBLIC - CREATE
 
         /// <summary>
-        /// Creates a LauncherSystem and returns it, prepares to update, launch, and communicate with a child Unity3D app.
+        /// Creates a ProcessSystem and returns it.
+        /// Used to Start, Stop, and listen to state changes with a child Process
         /// The path location must lead to an existing executable
         /// </summary>
-        /// <param name="options">Options object that determines the settings used to download, update, launch, and communicate with a child Unity3D app</param>
-        /// <param name="OnSuccess">Callback action when the Launcher system successfully initializes</param>
-        /// <param name="OnFailed">Callback action that returns a string with an error message when launcher initialization fails</param>
+        /// <param name="options">Options object that determines the settings used to Start, Stop, and send arguments to the process</param>
+        /// <param name="OnSuccess">Callback action when the Process system successfully initializes</param>
+        /// <param name="OnFailed">Callback action that returns a string with an error message when process initialization fails</param>
+        /// <param name="OnStateUpdate">Callback action called when the process changes state</param>
         //----------------------------------//
         public static void Create
         (
             Options options = null,
-            Action<LauncherSystem> OnSuccess = null,
+            Action<ProcessSystem> OnSuccess = null,
             Action<string> OnFailed = null,
-            Action<LauncherSystem, State> OnStateUpdate = null
+            Action<ProcessSystem, State> OnStateUpdate = null
         )
         //----------------------------------//
         {
 #if !GAMBIT_STATIC_COROUTINE
-            OnFailed?.Invoke( "LauncherManager.cs Create() missing GAMBIT_STATIC_COROUTINE scripting define symbol and/or package. Unable to continue." );
+            OnFailed?.Invoke( "ProcessManager.cs Create() missing GAMBIT_STATIC_COROUTINE scripting define symbol and/or package. Unable to continue." );
             return;
 #endif
 
             if(options == null)
             {
-                OnFailed?.Invoke( "LauncherManager.cs Create() options was passed in as null. Unable to continue." );
+                OnFailed?.Invoke( "ProcessManager.cs Create() options was passed in as null. Unable to continue." );
                 return;
             }
 
             if(string.IsNullOrEmpty( options.path ))
             {
-                OnFailed?.Invoke( "LauncherManager.cs Create() options.path is null or empty. Unable to continue." );
+                OnFailed?.Invoke( "ProcessManager.cs Create() options.path is null or empty. Unable to continue." );
                 return;
             }
 
             if( !File.Exists( options.path ))
             {
-                OnFailed?.Invoke( "LauncherManager.cs Create() unable to locate file at options.path. Unable to continue." );
+                OnFailed?.Invoke( "ProcessManager.cs Create() unable to locate file at options.path. Unable to continue." );
                 return;
             }
 
-            LauncherSystem system = new LauncherSystem();
+            ProcessSystem system = new ProcessSystem();
             system.options = options;
             system.OnStateUpdate = OnStateUpdate;
 
@@ -232,11 +213,11 @@ namespace gambit.launcher
         #region PRIVATE - SET STATE
 
         /// <summary>
-        /// Changes the state of the launcher system and sends out a message
+        /// Changes the state of the process system and sends out a message
         /// </summary>
         /// <param name="system"></param>
         //----------------------------------------------------------------------//
-        private static void SetState( LauncherSystem system, State state )
+        private static void SetState( ProcessSystem system, State state )
         //----------------------------------------------------------------------//
         {
             if(system == null)
@@ -255,56 +236,56 @@ namespace gambit.launcher
         #region PUBLIC - LAUNCH PROCESS
 
         /// <summary>
-        /// Using the path to the executable, launches a new process, running the executable
+        /// Using the path to the executable, launches a new process an submits any command line arguments in our options
         /// </summary>
         /// <param name="system"></param>
         //------------------------------------------------------------------//
         public static void LaunchProcess
         ( 
-            LauncherSystem system,
+            ProcessSystem system,
             Action OnLaunchSuccess = null,
             Action<string> OnLaunchFailed = null
         )
         //------------------------------------------------------------------//
         {
 #if !GAMBIT_STATIC_COROUTINE
-            OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() missing GAMBIT_STATIC_COROUTINE scripting define symbol and/or package. Unable to continue." );
+            OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() missing GAMBIT_STATIC_COROUTINE scripting define symbol and/or package. Unable to continue." );
             return;
 #endif
 
             if( system == null )
             {
-                OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() passed in system is null. Unable to continue." );
+                OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() passed in system is null. Unable to continue." );
                 return;
             }
 
             if(system.options == null)
             {
-                OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() system.options is null. Unable to continue." );
+                OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() system.options is null. Unable to continue." );
                 return;
             }
 
             if( string.IsNullOrEmpty( system.options.path ) )
             {
-                OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() system.options.path is null or empty. Unable to continue." );
+                OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() system.options.path is null or empty. Unable to continue." );
                 return;
             }
 
             if(!File.Exists( system.options.path ))
             {
-                OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() Executable file at path does not exist. Unable to continue." );
+                OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() Executable file at path does not exist. Unable to continue." );
                 return;
             }
 
             if( system.state == State.Running || system.state == State.Updating )
             {
-                OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() already running process, Unable to continue." );
+                OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() already running process, Unable to continue." );
                 return;
             }
 
             if(system.options.showDebugLogs)
             {
-                UnityEngine.Debug.Log( "LauncherManager.cs LaunchProcess() calling Process.Start() for process at path = " + system.options.path );
+                UnityEngine.Debug.Log( "ProcessManager.cs LaunchProcess() calling Process.Start() for process at path = " + system.options.path );
             }
 
             try
@@ -328,7 +309,7 @@ namespace gambit.launcher
             }
             catch( Exception e ) 
             {
-                OnLaunchFailed?.Invoke( "LauncherManager.cs LaunchProcess() Error while launching process = " + e.ToString() );
+                OnLaunchFailed?.Invoke( "ProcessManager.cs LaunchProcess() Error while launching process = " + e.ToString() );
                 return;
             }
 
@@ -409,7 +390,7 @@ namespace gambit.launcher
         /// <param name="system"></param>
         /// <returns></returns>
         //-----------------------------------------------------------------------------------------//
-        private static System.Collections.IEnumerator TrackProcess( LauncherSystem system )
+        private static System.Collections.IEnumerator TrackProcess( ProcessSystem system )
         //-----------------------------------------------------------------------------------------//
         {
             while(!system.process.HasExited)
@@ -532,11 +513,11 @@ namespace gambit.launcher
         #region PUBLIC - DESTROY
 
         /// <summary>
-        /// Destroys a launcher system, cleaning up an variables, timers, callback handlers, etc
+        /// Destroys a process system, cleaning up an variables, timers, callback handlers, etc
         /// </summary>
         /// <param name="system"></param>
         //------------------------------------------------------------------//
-        public static void Destroy( LauncherSystem system )
+        public static void Destroy( ProcessSystem system )
         //------------------------------------------------------------------//
         {
             if(system == null)
@@ -551,6 +532,6 @@ namespace gambit.launcher
 
         #endregion
 
-    } //END LauncherManager Class
+    } //END ProcessManager Class
 
-} //END gambit.launcher Namespace
+} //END gambit.process Namespace

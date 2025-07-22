@@ -5,7 +5,7 @@ using UnityEngine;
 
 #endregion
 
-namespace gambit.launcher
+namespace gambit.process
 {
 
     /// <summary>
@@ -68,7 +68,7 @@ namespace gambit.launcher
 
             Debug.Log( "------------------------------" );
 
-            List<string> keys = LauncherManager.ReadArgumentKeys( argsToTest );
+            List<string> keys = ProcessManager.ReadArgumentKeys( argsToTest );
 
 
             Debug.Log( "Extracted Keys:" );
@@ -87,7 +87,7 @@ namespace gambit.launcher
 
             Debug.Log( "------------------------------" );
 
-            List<string> values = LauncherManager.ReadArgumentValues( argsToTest );
+            List<string> values = ProcessManager.ReadArgumentValues( argsToTest );
 
             Debug.Log( "Extracted Values:" );
 
@@ -111,4 +111,4 @@ namespace gambit.launcher
 
     } //END CommandLineArgumentsTest Class
 
-} //END gambit.launcher Namespace
+} //END gambit.process Namespace
