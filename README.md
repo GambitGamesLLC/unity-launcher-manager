@@ -1,14 +1,14 @@
-# unity-launcher-manager
-Singleton manager package containing functionality for updating, launching, and communicating with other Unity3D apps
+# unity-process-manager
+Singleton manager package containing functionality for Starting, Stopping, State management, and send and recieve messages to processes when they are started
 
 **Assembly:**\
-com.gambit.launcher
+com.gambit.process
 
 **Namespace:**\
-Gambit.Launcher
+Gambit.Process
 
 **ASMDEF File:**\
-Gambit.Launcher  
+Gambit.Process  
 
 **Scripting Define Symbol:**\
-GAMBIT_LAUNCHER  
+GAMBIT_PROCESS

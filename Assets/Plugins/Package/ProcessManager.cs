@@ -1,7 +1,7 @@
 /*********************************************************
  * ProcessManager.cs
  * 
- * Singleton manager used to start, stop, and send command line arguments with another application process
+ * Singleton manager used to Start, Stop, Respond to State Changes, and send command line arguments with another application process
  * 
  **********************************************************/
 
@@ -16,6 +16,8 @@ using System.Text;
 
 #if GAMBIT_STATIC_COROUTINE
 using gambit.staticcoroutine;
+using static PlasticGui.ProcessProvider;
+
 #endif
 
 #if GAMBIT_SINGLETON
@@ -510,10 +512,148 @@ namespace gambit.process
 
         #endregion
 
+        #region PUBLIC - STOP PROCESS
+
+        /// <summary>
+        /// Requests that a running process closes, the same as if the user closed the process window or exited normally.
+        /// This does not guarantee a process will respond to the command.
+        /// If the process is frozen or not responding, this command will not work as expected.
+        /// If you need a guaranteed way to close the process, use the KillProcess command
+        /// </summary>
+        /// <param name="system"></param>
+        //-----------------------------------------------------------//
+        public static void StopProcess
+        ( 
+            ProcessSystem system,
+            Action OnSuccess,
+            Action<string> OnFailed
+        )
+        //-----------------------------------------------------------//
+        {
+            if( system == null )
+            {
+                OnFailed?.Invoke( "ProcessManager.cs StopProcess() passed in system object is null. Unable to continue" );
+                return;
+            }
+
+            if(system.process == null)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs StopProcess() process is null. Unable to continue" );
+                return;
+            }
+
+            if(system.process.HasExited)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs StopProcess() process has already exited. Unable to continue" );
+                return;
+            }
+
+            // Close process by sending a close message to its main window.
+            system.process.CloseMainWindow();
+
+            // Free resources associated with process.
+            system.process.Close();
+
+        } //END StopProcess Method
+
+        #endregion
+
+        #region PUBLIC - KILL PROCESS
+
+        /// <summary>
+        /// Force closes a running process.
+        /// This is the same as terminating a process in windows forcibly.
+        /// If your process was running normally, it will not have time to respond to this action before it closes.
+        /// </summary>
+        /// <param name="system"></param>
+        //-----------------------------------------------------------//
+        public static void KillProcess
+        (
+            ProcessSystem system,
+            Action OnSuccess,
+            Action<string> OnFailed
+        )
+        //-----------------------------------------------------------//
+        {
+            if(system == null)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs KillProcess() passed in system object is null. Unable to continue" );
+                return;
+            }
+
+            if(system.process == null)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs KillProcess() process is null. Unable to continue" );
+                return;
+            }
+
+            if(system.process.HasExited)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs KillProcess() process has already exited. Unable to continue" );
+                return;
+            }
+
+            system.process.Kill();
+
+        } //END KillProcess Method
+
+        #endregion
+
+        #region PUBLIC - IS PROCESS RUNNING
+
+        /// <summary>
+        /// Finds if the process is currently running
+        /// </summary>
+        /// <param name="system"></param>
+        /// <param name="OnSuccess">Returns a boolean about the process running state if there is no issue running our detection</param>
+        /// <param name="OnFailed">If we're unable to check the process due to an exception</param>
+        //---------------------------------------------//
+        public static void IsProcessRunning
+        //---------------------------------------------//
+        (
+            ProcessSystem system,
+            Action<bool> OnSuccess,
+            Action<string> OnFailed
+        )
+        {
+            if(system == null)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs IsProcessRunning() passed in ProcessSystem is null. Unable to continue" );
+                return;
+            }
+
+            if(system.process == null)
+            {
+                OnFailed?.Invoke( "ProcessManager.cs IsProcessRunning() passed in Process within ProcessSystem is null. Unable to continue" );
+                return;
+            }
+
+            //https://stackoverflow.com/a/268394
+            try
+            {
+                Process.GetProcessById( system.process.Id );
+            }
+#pragma warning disable CS0168 // Variable is declared but never used
+            catch(Exception e)
+#pragma warning restore CS0168 // Variable is declared but never used
+            {
+                OnSuccess?.Invoke( false );
+                return;
+            }
+
+            OnSuccess?.Invoke( true );
+            return;
+
+        } //END IsProcessRunning
+
+        #endregion
+
         #region PUBLIC - DESTROY
 
         /// <summary>
-        /// Destroys a process system, cleaning up an variables, timers, callback handlers, etc
+        /// Destroys a process system, cleaning up an variables, timers, callback handlers, etc.
+        /// This does not Stop or Kill the process directly, 
+        /// use the StopProcess and KillProcess functions to accomplish that instead
         /// </summary>
         /// <param name="system"></param>
         //------------------------------------------------------------------//

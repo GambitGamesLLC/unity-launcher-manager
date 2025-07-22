@@ -1,5 +1,5 @@
 {
-    "name": "gambit.launcher",
+    "name": "gambit.process",
     "rootNamespace": "",
     "references": [
         "GUID:fb409296692345840ae921b36ef03dc1",

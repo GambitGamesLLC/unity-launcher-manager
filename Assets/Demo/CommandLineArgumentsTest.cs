@@ -5,7 +5,7 @@ using UnityEngine;
 
 #endregion
 
-namespace gambit.process
+namespace gambit.process.demo
 {
 
     /// <summary>
@@ -111,4 +111,4 @@ namespace gambit.process
 
     } //END CommandLineArgumentsTest Class
 
-} //END gambit.process Namespace
+} //END gambit.process.demo Namespace

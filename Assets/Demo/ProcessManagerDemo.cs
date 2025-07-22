@@ -4,14 +4,14 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-#if GAMBIT_LAUNCHER
+#if GAMBIT_PROCESS
 using gambit.process;
 #endif
 
 #endregion
 
 
-namespace Gambit.ProcessManagerDemo
+namespace gambit.process.demo
 {
 
     /// <summary>
@@ -53,19 +53,19 @@ namespace Gambit.ProcessManagerDemo
         private void Start()
         //-----------------------------//
         {
-            CreateLauncherManager();
+            CreateProcessManager();
 
         } //END Start Method
 
         #endregion
 
-        #region PRIVATE - CREATE LAUNCHER MANAGER
+        #region PRIVATE - CREATE PROCESS MANAGER
 
         /// <summary>
-        /// Launches the process
+        /// Creates the process manager based on our options, then immediately launches the process
         /// </summary>
         //---------------------------------//
-        private void CreateLauncherManager()
+        private void CreateProcessManager()
         //---------------------------------//
         {
 
@@ -100,7 +100,7 @@ namespace Gambit.ProcessManagerDemo
                 }
             );
 
-        } //END CreateLauncherManager
+        } //END CreateProcessManager
 
         #endregion
 
@@ -120,6 +120,6 @@ namespace Gambit.ProcessManagerDemo
 
         #endregion
 
-    } //END LauncherDemo Class
+    } //END ProcessDemo Class
 
-} //END LauncherDemo Namespace
+} //END gambit.process.demo Namespace
