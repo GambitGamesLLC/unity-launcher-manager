@@ -39,14 +39,24 @@ Use actions for success, failure, and state updates to respond to process events
 
 ## DEMO INSTRUCTIONS
 
-Access the demo scene in located in the Assets/Demo folder\
-\
-The demo scene includes a "Demo" GameObject with two components used to test the ProcessManager package.
+Access the demo scenes in located in the Assets/Demo folder
+
+## PROCESS MANAGER DEMO
+Includes a "Demo" GameObject with two components used to test the ProcessManager package.\
+Press 'Play' to open the process specified at the path variable with the arguments passed into it.
 
 **ProcessManagerDemo**
 - **Path** : Full path to the executable you want to run. Defaults to notepad.exe for Windows OS.
 - **ArgumentKeys** : The command line argument keys you want to pass into the process defined at the path variable
 - **ArgumentValues** : The command line argument values you want to pass into the process defined at the path variable
+
+## COMMAND LINE ARGUMENTS DEMO
+Includes a "Demo" GameObject with a component used to test the ability of the ProcessManager to read command line values.\
+Press 'Play' to print the parsed command line arguments to the console log.
+
+**CommandLineArgumentsDemo**
+- **Command Line Arguments** : String[] of values, simulating the type of string returned by System.Environment.GetCommandLineArgs()
+
 
 ---
 
