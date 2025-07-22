@@ -15,19 +15,18 @@ namespace gambit.process.demo
     {
         #region PRIVATE - VARIABLES
 
-        // Sample command line arguments for testing
-        private static string[ ] testArgs = new string[ ]
+        // Sample command line arguments for testing. Simulates a value coming from System.Environment.GetCommandLineArgs()
+        public string[ ] commandLineArguments = new string[ ]
         {
-            "path/to/executable.exe",
-            "-level",
-            "5",
-            "-playerName",
+            "path/to/executable.exe", //First value is the executable name and potentially a full path to the process
+            "-level",                 //Each key starts with a '-'
+            "5",                      //Each key is proceeded by a value
+            "-playerName",            
             "Hero",
-            "extraArgument",
             "-debug",
-            "-fullscreen",
             "true",
-            "anotherExtra"
+            "-fullscreen",
+            "true"
         };
 
         #endregion
@@ -41,7 +40,7 @@ namespace gambit.process.demo
         public void Start()
         //-------------------------//
         {
-            TestArgumentParsing( testArgs );
+            TestArgumentParsing( commandLineArguments );
 
         } //END Start Method
 
