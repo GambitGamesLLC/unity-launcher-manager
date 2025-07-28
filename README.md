@@ -219,7 +219,7 @@ public class ArgumentReader : MonoBehaviour
 ## DEPENDENCIES
 This package relies on other open-source packages to function correctly. The required dependencies will be automatically installed by the Unity Package Manager.
 
--   **Gambit Static Coroutine** [[Gambit Repo]](https://github.com/GambitGamesLLC/unity-config-manager)  
+-   **Gambit Static Coroutine** [[Gambit Repo]](https://github.com/GambitGamesLLC/unity-static-coroutine)  
     A utility for running coroutines without a MonoBehaviour instance
 
 -   **Gambit Singleton** [[Gambit Repo]](https://github.com/GambitGamesLLC/unity-singleton)  
