@@ -16,8 +16,6 @@ using System.Text;
 
 #if GAMBIT_STATIC_COROUTINE
 using gambit.staticcoroutine;
-using static PlasticGui.ProcessProvider;
-
 #endif
 
 #if GAMBIT_SINGLETON
