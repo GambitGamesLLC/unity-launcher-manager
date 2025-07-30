@@ -451,7 +451,9 @@ namespace gambit.process
                 {
                     if(args[ i ].StartsWith( "-" ))
                     {
-                        result.Add( args[ i ] );
+                        //Remove the '-' from the result
+                        string newString = args[ i ].Remove( 0, 1 );
+                        result.Add( newString );
                     }
                     // If the current argument doesn't start with '-', it might be a value
                     // associated with the previous key, so we skip it in the key collection.
